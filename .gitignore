@@ -1,1 +1,4 @@
 .vscode
+images/*
+groups/*
+!groups/README.md
