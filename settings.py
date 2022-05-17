@@ -11,5 +11,5 @@ OUTPUT_DIR = './groups'
 
 # ---- Attention, the settings below changes how the algorithm behaves ---- #
 
-DOWNSCALE = False # Downscale images to a maximum volume of 2000x1000 pixels
+DOWNSCALE = False # If images have a volume above 2000x1000 pixels, downscale them to half their size
 DELETE_PROCESSED = True # Delete processed images from the input folder
