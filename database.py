@@ -1,6 +1,6 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
-from constants import DEBUG
+from settings import DEBUG, USE_DB
 
 # ----------------------- Database Configuration Domain ---------------------- #
 
@@ -46,6 +46,17 @@ def getAllProcessedInputFiles():
         return objs
 
 def withoutProcessedPaths(paths):
-    all_processed_inputs = [input.absolute_path for input in getAllProcessedInputFiles()]
-    
-    return [path for path in paths if not (path in all_processed_inputs)]
+    if (USE_DB):
+        all_processed_inputs = [input.absolute_path for input in getAllProcessedInputFiles()]
+        
+        return [path for path in paths if not (path in all_processed_inputs)]
+    else:
+        return paths
+
+def storeProcessedPaths(paths):
+    if (USE_DB):
+        with (getInternalSession()) as session:
+            session.commit()
+            for path in paths:
+                session.add(InputFile(absolute_path=path, proccessed=True))
+            session.commit()
