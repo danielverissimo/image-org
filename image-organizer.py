@@ -7,14 +7,17 @@ from database import withoutProcessedPaths, storeProcessedPaths
 from settings import DEBUG, DELETE_PROCESSED, INPUT_DIR, OUTPUT_DIR, DOWNSCALE, DELETE_PROCESSED
 from slugify import slugify
 
-log_file = open('log.txt', 'a')
 run_identity = f'{time.clock()}-{datetime.now().strftime("%H:%M:%S-%d/%m/%Y")}'
 
 def debug(msg, show=False):
+    log_file = open('log.txt', 'a')
+
     if (DEBUG or show):
         print(msg)
     
     print(msg, file=log_file)
+
+    log_file.close()
 
 debug(f'\n\n--------------------------------------\nRUN {run_identity}\n')
 
@@ -180,5 +183,3 @@ if (__name__ == '__main__'):
     general_counter = time.perf_counter() - general_counter
 
     debug(f'\nTotal time: {general_counter} seconds\n', True)
-
-log_file.close()
