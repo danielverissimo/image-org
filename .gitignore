@@ -5,3 +5,6 @@ groups/*
 internal.db
 main.db
 log.txt
+database.cpython*
+settings.cpython*
+.DS_Store
