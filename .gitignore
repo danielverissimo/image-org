@@ -2,3 +2,6 @@
 images/*
 groups/*
 !groups/README.md
+internal.db
+main.db
+log.txt
