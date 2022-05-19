@@ -7,6 +7,8 @@ from database import withoutProcessedPaths, storeProcessedPaths
 from settings import DEBUG, DELETE_PROCESSED, INPUT_DIR, OUTPUT_DIR, DOWNSCALE, DELETE_PROCESSED
 from slugify import slugify
 
+time.clock = time.time
+
 log_file = open('log.txt', 'a')
 run_identity = f'{time.clock()}-{datetime.now().strftime("%H:%M:%S-%d/%m/%Y")}'
 
@@ -34,15 +36,16 @@ def loadImages(paths):
     for path in paths:
 
         img = cv2.imread(path)
-        w, h, colors = img.shape
+        if hasattr(img, 'shape'):
+            w, h, colors = img.shape
 
-        byte_count += w*h*colors
+            byte_count += w*h*colors
 
-        if (DOWNSCALE and w*h > (2000*1000)):
-            downscaled = (math.floor(h / 2), math.floor(w / 2))
-            img = cv2.resize(cv2.imread(path), downscaled)
+            if (DOWNSCALE and w*h > (2000*1000)):
+                downscaled = (math.floor(h / 2), math.floor(w / 2))
+                img = cv2.resize(cv2.imread(path), downscaled)
 
-        images.append([path, img])
+            images.append([path, img])
     return [images, byte_count]
 
 def categorizeImagesByQrCode(images):

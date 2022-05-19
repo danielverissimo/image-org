@@ -1,4 +1,9 @@
 .vscode
 images/*
 groups/*
+image-org/*
+database.cpython*
+settings.cpython*
 !groups/README.md
+.DS_Store
+Pipfile.lock
