@@ -1,6 +1,9 @@
+from datetime import datetime
+import os
+from random import randint
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
-from settings import DEBUG, USE_DB
+from settings import DEBUG, USE_DB, MAIN_STORE_FULL_PATH, DB_DEBUG
 
 # ----------------------- Database Configuration Domain ---------------------- #
 
@@ -9,28 +12,58 @@ DB_CONNECTION = 'sqlite:///main.db'
 FILEPATH_LIMIT = 200 # Filepath limit in characters.
 
 InternalModel = orm.declarative_base()
+MainModel = orm.declarative_base()
 
 class InputFile(InternalModel):
     __tablename__ = 'input_files'
-    id = sa.Column(sa.Integer, primary_key=True)
+    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     absolute_path = sa.Column(sa.String(200))
     proccessed = sa.Column(sa.Boolean())
 
     def __repr__(self):
         return f'InputFile(id={self.id},absolute_path={self.absolute_path})'
 
+class Foto(MainModel):
+    __tablename__ = 'fotos'
+    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    camera_id = sa.Column(sa.BigInteger)
+    grupo_id = sa.Column(sa.BigInteger)
+    user_id = sa.Column(sa.BigInteger)
+    arquivo = sa.Column(sa.String(191))
+    created_at = sa.Column(sa.TIMESTAMP)
+    updated_at = sa.Column(sa.TIMESTAMP)
+    deleted_at = sa.Column(sa.TIMESTAMP)
+
+class Grupo(MainModel):
+    __tablename__ = 'grupos'
+    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    codigo = sa.Column(sa.String(191))
+    data_separacao = sa.Column(sa.DateTime)
+    data_impressao = sa.Column(sa.DateTime)
+    data_entrega = sa.Column(sa.DateTime)
+    created_at = sa.Column(sa.TIMESTAMP)
+    updated_at = sa.Column(sa.TIMESTAMP)
+    deleted_at = sa.Column(sa.TIMESTAMP)
+
 def internalDb():
-    return sa.create_engine(INTERNAL_CONNECTION, echo=DEBUG, future=True)
+    return sa.create_engine(INTERNAL_CONNECTION, echo=DB_DEBUG, future=True)
 
 def mainDb():
-    return sa.create_engine(DB_CONNECTION, echo=DEBUG, future=True)
+    return sa.create_engine(DB_CONNECTION, echo=DB_DEBUG, future=True)
 
 def createInternalTables():
     engine = internalDb()
     InternalModel.metadata.create_all(engine)
 
+def createMainTables():
+    engine = mainDb()
+    MainModel.metadata.create_all(engine)
+
 def getInternalSession():
     return orm.Session(internalDb())
+
+def getMainSession():
+    return orm.Session(mainDb())
 
 # ---------------------------------------------------------------------------- #
 
@@ -60,3 +93,36 @@ def storeProcessedPaths(paths):
             for path in paths:
                 session.add(InputFile(absolute_path=path, proccessed=True))
             session.commit()
+
+def storeGroup(group, code):
+    with (getMainSession()) as session:
+        session.commit()
+        grupo = Grupo(
+            codigo=code,
+            data_separacao=datetime.now(),
+            data_impressao=None,
+            data_entrega=None,
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
+            deleted_at=None
+        )
+        session.add(grupo)
+        session.commit()
+
+        fotos = []
+
+        for [path, img] in group:
+            arquivo = path if MAIN_STORE_FULL_PATH else os.path.basename(path)
+
+            foto = Foto(
+                camera_id=randint(0,99999),
+                grupo_id = grupo.id,
+                user_id = 1,
+                arquivo = arquivo,
+                created_at=datetime.now(),
+                updated_at=datetime.now(),
+                deleted_at=None
+            )
+            session.add(foto)
+
+        session.commit()
