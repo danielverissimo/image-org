@@ -7,6 +7,8 @@ name = "pypi"
 opencv-python = "*"
 sqlalchemy = "*"
 python-slugify = "*"
+natsort = "*"
+pyicu = "*"
 
 [dev-packages]
 

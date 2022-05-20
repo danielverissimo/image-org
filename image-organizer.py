@@ -3,20 +3,22 @@ import os
 import time
 import cv2
 from datetime import datetime
-from database import withoutProcessedPaths, storeProcessedPaths
+from database import storeGroup, withoutProcessedPaths, storeProcessedPaths
 from settings import DEBUG, DELETE_PROCESSED, INPUT_DIR, OUTPUT_DIR, DOWNSCALE, DELETE_PROCESSED
 from slugify import slugify
+from natsort import os_sorted
 
-time.clock = time.time
-
-log_file = open('log.txt', 'a')
 run_identity = f'{time.clock()}-{datetime.now().strftime("%H:%M:%S-%d/%m/%Y")}'
 
 def debug(msg, show=False):
+    log_file = open('log.txt', 'a')
+
     if (DEBUG or show):
         print(msg)
     
     print(msg, file=log_file)
+
+    log_file.close()
 
 debug(f'\n\n--------------------------------------\nRUN {run_identity}\n')
 
@@ -131,8 +133,16 @@ def storeGroups(groups):
                 else:
                     debug(f'\t\t {path} Doesnt exist, did nothing.')
 
+    if (len(groups) > 0):
+        debug('\n\t\t Calling main database to store the image groups')
+        for code in groups:
+            storeGroup(groups[code], code)
+        debug ('\t\t DB Done\n')
+
 def processFiles(paths):
     byte_count = 0
+    images = []
+
 
     # ---------------------------------------------------------------------------- #
 
@@ -168,20 +178,18 @@ if (__name__ == '__main__'):
     pending_paths = withoutProcessedPaths(paths)
     debug('\nDB done\n')
 
-    sorted_paths = sorted(pending_paths, key=lambda x: x.lower())
+    sorted_paths = os_sorted(pending_paths)
 
     debug('\nSORTED AND FILTERED INPUT FILE PATHS')
 
     for i, path in enumerate(sorted_paths):
         debug(f'\tfile({i}):{path}')
     
-    debug ('\nNow loading images and looking for QR Codes')
+    # debug ('\nNow loading images and looking for QR Codes')
     [bytes_read, qr_time, image_time, store_time] = processFiles(sorted_paths)
 
-    debug(f'\nRead {bytes_read} bytes of raw image data\n{qr_time} seconds to detect QR Codes\n{image_time} seconds to load images\n{store_time} seconds to store images on their groups')
+    # debug(f'\nRead {bytes_read} bytes of raw image data\n{qr_time} seconds to detect QR Codes\n{image_time} seconds to load images\n{store_time} seconds to store images on their groups')
 
     general_counter = time.perf_counter() - general_counter
 
     debug(f'\nTotal time: {general_counter} seconds\n', True)
-
-log_file.close()
