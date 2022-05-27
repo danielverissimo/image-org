@@ -3,10 +3,12 @@ import os
 import time
 import cv2
 from datetime import datetime
-from database import storeGroup, withoutProcessedPaths, storeProcessedPaths
-from settings import DEBUG, DELETE_PROCESSED, INPUT_DIR, OUTPUT_DIR, DOWNSCALE, DELETE_PROCESSED
+from database import storeGroup, withoutProcessedPaths, storeProcessedPaths, getAllCameras
+from settings import DEBUG, DELETE_PROCESSED, OUTPUT_DIR, DOWNSCALE, DELETE_PROCESSED
 from slugify import slugify
 from natsort import os_sorted
+
+time.clock = time.time
 
 run_identity = f'{time.clock()}-{datetime.now().strftime("%H:%M:%S-%d/%m/%Y")}'
 
@@ -22,9 +24,9 @@ def debug(msg, show=False):
 
 debug(f'\n\n--------------------------------------\nRUN {run_identity}\n')
 
-def getInputPaths():
-    absolute_input_dir = os.path.realpath(INPUT_DIR)
-    input_relatives = os.listdir(INPUT_DIR)
+def getInputPaths(path):
+    absolute_input_dir = os.path.realpath(path)
+    input_relatives = os.listdir(path)
 
     absolute_paths = []
     for file in input_relatives:
@@ -172,24 +174,29 @@ def processFiles(paths):
 if (__name__ == '__main__'):
     general_counter = time.perf_counter()
 
-    paths = getInputPaths()
+    cameras = getAllCameras()
 
-    debug('\nConsulting db to discard already processed paths.\n')
-    pending_paths = withoutProcessedPaths(paths)
-    debug('\nDB done\n')
+    for camera in enumerate(cameras):
 
-    sorted_paths = os_sorted(pending_paths)
+        paths = getInputPaths(camera[1]._data[0].diretorio)
 
-    debug('\nSORTED AND FILTERED INPUT FILE PATHS')
+        debug('\nConsulting db to discard already processed paths.\n')
+        pending_paths = withoutProcessedPaths(paths)
+        debug('\nDB done\n')
 
-    for i, path in enumerate(sorted_paths):
-        debug(f'\tfile({i}):{path}')
-    
-    # debug ('\nNow loading images and looking for QR Codes')
-    [bytes_read, qr_time, image_time, store_time] = processFiles(sorted_paths)
+        sorted_paths = os_sorted(pending_paths)
 
-    # debug(f'\nRead {bytes_read} bytes of raw image data\n{qr_time} seconds to detect QR Codes\n{image_time} seconds to load images\n{store_time} seconds to store images on their groups')
+        debug('\nSORTED AND FILTERED INPUT FILE PATHS')
 
-    general_counter = time.perf_counter() - general_counter
+        for i, path in enumerate(sorted_paths):
+            debug(f'\tfile({i}):{path}')
+        
+        # debug ('\nNow loading images and looking for QR Codes')
+        [bytes_read, qr_time, image_time, store_time] = processFiles(sorted_paths)
 
-    debug(f'\nTotal time: {general_counter} seconds\n', True)
+        # debug(f'\nRead {bytes_read} bytes of raw image data\n{qr_time} seconds to detect QR Codes\n{image_time} seconds to load images\n{store_time} seconds to store images on their groups')
+
+        general_counter = time.perf_counter() - general_counter
+
+        debug(f'\nTotal time: {general_counter} seconds\n', True)
+

@@ -23,6 +23,20 @@ class InputFile(InternalModel):
     def __repr__(self):
         return f'InputFile(id={self.id},absolute_path={self.absolute_path})'
 
+class Camera(MainModel):
+    __tablename__ = 'cameras'
+    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    numero = sa.Column(sa.Integer)
+    descricao = sa.Column(sa.String(200))
+    diretorio = sa.Column(sa.String(200))
+    fotografo = sa.Column(sa.String(200))
+    created_at = sa.Column(sa.TIMESTAMP)
+    updated_at = sa.Column(sa.TIMESTAMP)
+    deleted_at = sa.Column(sa.TIMESTAMP)
+
+    def __repr__(self):
+        return f'Camera(id={self.id},numero={self.numero},descricao={self.descricao},diretorio={self.diretorio},fotografo={self.fotografo})'
+
 class Foto(MainModel):
     __tablename__ = 'fotos'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
@@ -126,3 +140,11 @@ def storeGroup(group, code):
             session.add(foto)
 
         session.commit()
+
+def getAllCameras():
+    with (getMainSession()) as session:
+        stmt = sa.select(Camera)
+        objs = []
+        for obj in session.execute(stmt):
+            objs.append(obj)
+        return objs

@@ -5,8 +5,6 @@ DB_DEBUG = False
 # Persist proccess control in the internal database?
 USE_DB = True
 
-# Folder where the images to be organized are located
-INPUT_DIR = './images'
 # Folder where the organized groups should be created/stored
 OUTPUT_DIR = './groups'
 

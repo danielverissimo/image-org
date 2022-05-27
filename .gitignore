@@ -8,3 +8,5 @@ log.txt
 database.cpython*
 settings.cpython*
 .DS_Store
+image-org/*
+cameras/*
