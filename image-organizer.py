@@ -97,7 +97,7 @@ def categorizeImagesByQrCode(images):
     
     return groups
 
-def storeGroups(groups, camera_id):
+def storeGroups(groups, camera_id, user_id):
     processed_paths = []
 
     for key in groups:
@@ -140,10 +140,10 @@ def storeGroups(groups, camera_id):
     if (len(groups) > 0):
         debug('\n\t\t Calling main database to store the image groups')
         for code in groups:
-            storeGroup(groups[code], code, camera_id)
+            storeGroup(groups[code], code, camera_id, user_id)
         debug ('\t\t DB Done\n')
 
-def processFiles(paths, camera_id):
+def processFiles(paths, camera_id, user_id):
     byte_count = 0
     images = []
 
@@ -167,7 +167,7 @@ def processFiles(paths, camera_id):
     # ---------------------------------------------------------------------------- #
 
     store_performance_counter = time.perf_counter()
-    storeGroups(groups, camera_id)
+    storeGroups(groups, camera_id, user_id)
     store_performance_counter = time.perf_counter() - store_performance_counter
 
     return [byte_count, qr_performance_counter, image_reading_counter, store_performance_counter]
@@ -195,7 +195,7 @@ if (__name__ == '__main__'):
             debug(f'\tfile({i}):{path}')
         
         # debug ('\nNow loading images and looking for QR Codes')
-        [bytes_read, qr_time, image_time, store_time] = processFiles(sorted_paths, cameraObj.id)
+        [bytes_read, qr_time, image_time, store_time] = processFiles(sorted_paths, cameraObj.id, cameraObj.user_id)
 
         # debug(f'\nRead {bytes_read} bytes of raw image data\n{qr_time} seconds to detect QR Codes\n{image_time} seconds to load images\n{store_time} seconds to store images on their groups')
 

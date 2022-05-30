@@ -30,6 +30,7 @@ class Camera(MainModel):
     numero = sa.Column(sa.Integer)
     descricao = sa.Column(sa.String(200))
     diretorio = sa.Column(sa.String(200))
+    user_id = sa.Column(sa.Integer)
     created_at = sa.Column(sa.TIMESTAMP)
     updated_at = sa.Column(sa.TIMESTAMP)
     deleted_at = sa.Column(sa.TIMESTAMP)
@@ -107,7 +108,7 @@ def storeProcessedPaths(paths):
                 session.add(InputFile(absolute_path=path, proccessed=True))
             session.commit()
 
-def storeGroup(group, code, camera_id):
+def storeGroup(group, code, camera_id, user_id):
     with (getMainSession()) as session:
         session.commit()
         grupo = Grupo(
@@ -129,7 +130,7 @@ def storeGroup(group, code, camera_id):
             foto = Foto(
                 camera_id=camera_id,
                 grupo_id = grupo.id,
-                user_id = 1,
+                user_id = user_id,
                 arquivo = arquivo,
                 created_at=datetime.now(),
                 updated_at=datetime.now(),
