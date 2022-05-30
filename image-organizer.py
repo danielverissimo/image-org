@@ -25,12 +25,12 @@ def debug(msg, show=False):
 debug(f'\n\n--------------------------------------\nRUN {run_identity}\n')
 
 def getInputPaths(path):
+    absolute_paths = []
     file_path = BASE_INPUT_DIR + path
     if os.path.isfile(file_path):
         absolute_input_dir = os.path.realpath(file_path)
         input_relatives = os.listdir(file_path)
 
-        absolute_paths = []
         for file in input_relatives:
             absolute_paths.append(os.path.join(absolute_input_dir, file))
     
