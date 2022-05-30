@@ -3,7 +3,7 @@ DEBUG = True
 DB_DEBUG = False
 
 # Persist proccess control in the internal database?
-USE_DB = True
+USE_DB = False
 
 # Folder where the images to be organized are located
 BASE_INPUT_DIR = '/var/www/image-org-2/cameras/'
