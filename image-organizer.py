@@ -179,17 +179,17 @@ if (__name__ == '__main__'):
     cameras = getAllCameras()
 
     for camera in enumerate(cameras):
+        
+        debug('\nCAMERA: ' + cameraObj.diretorio)
 
         cameraObj = camera[1]._data[0]
         paths = getInputPaths(cameraObj.diretorio)
 
-        debug('\nConsulting db to discard already processed paths.\n')
+        # debug('\nConsulting db to discard already processed paths.\n')
         pending_paths = withoutProcessedPaths(paths)
-        debug('\nDB done\n')
+        # debug('\nDB done\n')
 
         sorted_paths = os_sorted(pending_paths)
-
-        debug('\nSORTED AND FILTERED INPUT FILE PATHS:' + cameraObj.diretorio)
 
         for i, path in enumerate(sorted_paths):
             debug(f'\tfile({i}):{path}')
@@ -201,5 +201,5 @@ if (__name__ == '__main__'):
 
         general_counter = time.perf_counter() - general_counter
 
-        debug(f'\nTotal time: {general_counter} seconds\n', True)
+    debug(f'\nTotal time: {general_counter} seconds\n', True)
 
