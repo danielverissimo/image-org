@@ -19,4 +19,4 @@ DELETE_PROCESSED = False # Delete processed images from the input folder
 
 
 # ------------------------------------------------------------------------- #
-MAIN_STORE_FULL_PATH = True # Whether to store the fullpath or just the filename in the Main database's fotos table.
+MAIN_STORE_FULL_PATH = False # Whether to store the fullpath or just the filename in the Main database's fotos table.
