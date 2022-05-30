@@ -189,7 +189,7 @@ if (__name__ == '__main__'):
 
         sorted_paths = os_sorted(pending_paths)
 
-        debug('\nSORTED AND FILTERED INPUT FILE PATHS')
+        debug('\nSORTED AND FILTERED INPUT FILE PATHS:' + cameraObj.diretorio)
 
         for i, path in enumerate(sorted_paths):
             debug(f'\tfile({i}):{path}')
