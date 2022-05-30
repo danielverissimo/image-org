@@ -52,7 +52,7 @@ class Foto(MainModel):
 class Grupo(MainModel):
     __tablename__ = 'grupos'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    codigo = sa.Column(sa.String(191))
+    codigo1 = sa.Column(sa.String(191))
     data_impressao = sa.Column(sa.DateTime)
     data_entrega = sa.Column(sa.DateTime)
     created_at = sa.Column(sa.TIMESTAMP)
