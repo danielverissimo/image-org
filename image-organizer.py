@@ -26,7 +26,7 @@ debug(f'\n\n--------------------------------------\nRUN {run_identity}\n')
 
 def getInputPaths(path):
     file_path = BASE_INPUT_DIR + path
-    if not os.path.isfile(file_path):
+    if os.path.isfile(file_path):
         absolute_input_dir = os.path.realpath(file_path)
         input_relatives = os.listdir(file_path)
 
