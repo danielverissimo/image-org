@@ -8,8 +8,8 @@ from settings import DEBUG, USE_DB, MAIN_STORE_FULL_PATH, DB_DEBUG
 # ----------------------- Database Configuration Domain ---------------------- #
 
 INTERNAL_CONNECTION = 'sqlite:///internal.db'
-DB_CONNECTION = 'sqlite:///main.db'
-# DB_CONNECTION = 'mysql+pymysql://<username>:<password>@<host>/<dbname>'
+# DB_CONNECTION = 'sqlite:///main.db'
+DB_CONNECTION = 'mysql+pymysql://root:fc24m8u3J41W9hcDnkQZLldwJ4i2um3lUa/Ogkm2BHc=@localhost/fotografica'
 FILEPATH_LIMIT = 200 # Filepath limit in characters.
 
 InternalModel = orm.declarative_base()
