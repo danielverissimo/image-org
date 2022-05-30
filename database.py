@@ -9,6 +9,7 @@ from settings import DEBUG, USE_DB, MAIN_STORE_FULL_PATH, DB_DEBUG
 
 INTERNAL_CONNECTION = 'sqlite:///internal.db'
 DB_CONNECTION = 'sqlite:///main.db'
+# DB_CONNECTION = 'mysql+pymysql://<username>:<password>@<host>/<dbname>'
 FILEPATH_LIMIT = 200 # Filepath limit in characters.
 
 InternalModel = orm.declarative_base()
@@ -52,7 +53,6 @@ class Grupo(MainModel):
     __tablename__ = 'grupos'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     codigo = sa.Column(sa.String(191))
-    data_separacao = sa.Column(sa.DateTime)
     data_impressao = sa.Column(sa.DateTime)
     data_entrega = sa.Column(sa.DateTime)
     created_at = sa.Column(sa.TIMESTAMP)
@@ -108,12 +108,11 @@ def storeProcessedPaths(paths):
                 session.add(InputFile(absolute_path=path, proccessed=True))
             session.commit()
 
-def storeGroup(group, code):
+def storeGroup(group, code, camera_id):
     with (getMainSession()) as session:
         session.commit()
         grupo = Grupo(
             codigo=code,
-            data_separacao=datetime.now(),
             data_impressao=None,
             data_entrega=None,
             created_at=datetime.now(),
@@ -129,7 +128,7 @@ def storeGroup(group, code):
             arquivo = path if MAIN_STORE_FULL_PATH else os.path.basename(path)
 
             foto = Foto(
-                camera_id=randint(0,99999),
+                camera_id=camera_id,
                 grupo_id = grupo.id,
                 user_id = 1,
                 arquivo = arquivo,

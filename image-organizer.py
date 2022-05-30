@@ -4,7 +4,7 @@ import time
 import cv2
 from datetime import datetime
 from database import storeGroup, withoutProcessedPaths, storeProcessedPaths, getAllCameras
-from settings import DEBUG, DELETE_PROCESSED, OUTPUT_DIR, DOWNSCALE, DELETE_PROCESSED
+from settings import DEBUG, DELETE_PROCESSED, OUTPUT_DIR, DOWNSCALE, DELETE_PROCESSED, BASE_INPUT_DIR
 from slugify import slugify
 from natsort import os_sorted
 
@@ -25,12 +25,14 @@ def debug(msg, show=False):
 debug(f'\n\n--------------------------------------\nRUN {run_identity}\n')
 
 def getInputPaths(path):
-    absolute_input_dir = os.path.realpath(path)
-    input_relatives = os.listdir(path)
+    file_path = BASE_INPUT_DIR + path
+    if not os.path.isfile(file_path):
+        absolute_input_dir = os.path.realpath(file_path)
+        input_relatives = os.listdir(file_path)
 
-    absolute_paths = []
-    for file in input_relatives:
-        absolute_paths.append(os.path.join(absolute_input_dir, file))
+        absolute_paths = []
+        for file in input_relatives:
+            absolute_paths.append(os.path.join(absolute_input_dir, file))
     
     return absolute_paths
 
@@ -95,7 +97,7 @@ def categorizeImagesByQrCode(images):
     
     return groups
 
-def storeGroups(groups):
+def storeGroups(groups, camera_id):
     processed_paths = []
 
     for key in groups:
@@ -138,7 +140,7 @@ def storeGroups(groups):
     if (len(groups) > 0):
         debug('\n\t\t Calling main database to store the image groups')
         for code in groups:
-            storeGroup(groups[code], code)
+            storeGroup(groups[code], code, camera_id)
         debug ('\t\t DB Done\n')
 
 def processFiles(paths):
@@ -178,7 +180,8 @@ if (__name__ == '__main__'):
 
     for camera in enumerate(cameras):
 
-        paths = getInputPaths(camera[1]._data[0].diretorio)
+        cameraObj = camera[1]._data[0]
+        paths = getInputPaths(cameraObj.diretorio)
 
         debug('\nConsulting db to discard already processed paths.\n')
         pending_paths = withoutProcessedPaths(paths)
@@ -192,7 +195,7 @@ if (__name__ == '__main__'):
             debug(f'\tfile({i}):{path}')
         
         # debug ('\nNow loading images and looking for QR Codes')
-        [bytes_read, qr_time, image_time, store_time] = processFiles(sorted_paths)
+        [bytes_read, qr_time, image_time, store_time] = processFiles(sorted_paths, cameraObj.camera_id)
 
         # debug(f'\nRead {bytes_read} bytes of raw image data\n{qr_time} seconds to detect QR Codes\n{image_time} seconds to load images\n{store_time} seconds to store images on their groups')
 
