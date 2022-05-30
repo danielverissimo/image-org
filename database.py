@@ -30,7 +30,6 @@ class Camera(MainModel):
     numero = sa.Column(sa.Integer)
     descricao = sa.Column(sa.String(200))
     diretorio = sa.Column(sa.String(200))
-    fotografo = sa.Column(sa.String(200))
     created_at = sa.Column(sa.TIMESTAMP)
     updated_at = sa.Column(sa.TIMESTAMP)
     deleted_at = sa.Column(sa.TIMESTAMP)
