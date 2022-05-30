@@ -143,7 +143,7 @@ def storeGroups(groups, camera_id):
             storeGroup(groups[code], code, camera_id)
         debug ('\t\t DB Done\n')
 
-def processFiles(paths):
+def processFiles(paths, camera_id):
     byte_count = 0
     images = []
 
@@ -167,7 +167,7 @@ def processFiles(paths):
     # ---------------------------------------------------------------------------- #
 
     store_performance_counter = time.perf_counter()
-    storeGroups(groups)
+    storeGroups(groups, camera_id)
     store_performance_counter = time.perf_counter() - store_performance_counter
 
     return [byte_count, qr_performance_counter, image_reading_counter, store_performance_counter]
