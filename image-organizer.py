@@ -195,7 +195,7 @@ if (__name__ == '__main__'):
             debug(f'\tfile({i}):{path}')
         
         # debug ('\nNow loading images and looking for QR Codes')
-        [bytes_read, qr_time, image_time, store_time] = processFiles(sorted_paths, cameraObj.camera_id)
+        [bytes_read, qr_time, image_time, store_time] = processFiles(sorted_paths, cameraObj.id)
 
         # debug(f'\nRead {bytes_read} bytes of raw image data\n{qr_time} seconds to detect QR Codes\n{image_time} seconds to load images\n{store_time} seconds to store images on their groups')
 
