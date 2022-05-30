@@ -180,10 +180,10 @@ if (__name__ == '__main__'):
 
     for camera in enumerate(cameras):
         
-        debug('\nCAMERA: ' + cameraObj.diretorio)
-
         cameraObj = camera[1]._data[0]
         paths = getInputPaths(cameraObj.diretorio)
+
+        debug('\nCAMERA: ' + cameraObj.diretorio)
 
         # debug('\nConsulting db to discard already processed paths.\n')
         pending_paths = withoutProcessedPaths(paths)
