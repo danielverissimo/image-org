@@ -187,7 +187,7 @@ if (__name__ == '__main__'):
         pending_paths = withoutProcessedPaths(paths)
         # debug('\nDB done\n')
 
-        debug('\nCAMERA: ' + cameraObj.diretorio + ', LEN: ' + len(pending_paths))
+        debug('\nCAMERA: ' + cameraObj.diretorio + ', LEN: ' + str(len(pending_paths)))
 
         sorted_paths = os_sorted(pending_paths)
 
