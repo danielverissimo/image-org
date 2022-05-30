@@ -183,11 +183,11 @@ if (__name__ == '__main__'):
         cameraObj = camera[1]._data[0]
         paths = getInputPaths(cameraObj.diretorio)
 
-        debug('\nCAMERA: ' + cameraObj.diretorio)
-
         # debug('\nConsulting db to discard already processed paths.\n')
         pending_paths = withoutProcessedPaths(paths)
         # debug('\nDB done\n')
+
+        debug('\nCAMERA: ' + cameraObj.diretorio + ', LEN: ' + len(pending_paths))
 
         sorted_paths = os_sorted(pending_paths)
 
