@@ -122,8 +122,6 @@ def storeGroup(group, code, camera_id, user_id):
         session.add(grupo)
         session.commit()
 
-        fotos = []
-
         for [path, img] in group:
             arquivo = path if MAIN_STORE_FULL_PATH else os.path.basename(path)
 

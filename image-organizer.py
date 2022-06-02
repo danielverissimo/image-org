@@ -4,7 +4,7 @@ import time
 import cv2
 from datetime import datetime
 from database import storeGroup, withoutProcessedPaths, storeProcessedPaths, getAllCameras
-from settings import DEBUG, DELETE_PROCESSED, OUTPUT_DIR, DOWNSCALE, DELETE_PROCESSED, BASE_INPUT_DIR
+from settings import DEBUG, DELETE_PROCESSED, OUTPUT_DIR, DOWNSCALE, DELETE_PROCESSED, BASE_INPUT_DIR, MOVE_FILES, REMOVE_ORIGINAL_QRCODE
 from slugify import slugify
 from natsort import os_sorted
 
@@ -80,7 +80,9 @@ def categorizeImagesByQrCode(images):
             if (str(code) in groups):
                 groups[str(code)] += image_accumulator + [[path, img]]
             else:
-                groups[str(code)] = image_accumulator + [[path, img]]
+                groups[str(code)] = image_accumulator
+                if (REMOVE_ORIGINAL_QRCODE):
+                    os.remove(path)
 
             image_accumulator = []
         else:
@@ -116,10 +118,16 @@ def storeGroups(groups, camera_id, user_id):
         if (os.path.exists(folderpath)):
 
             for [path, img] in groups[key]:
+                # group = groups[key]
                 processed_paths += [path]
                 new_imagepath = os.path.join(folderpath, os.path.basename(path))
-                cv2.imwrite(new_imagepath, img)
-                debug(f'\t\tCopied {path} to {new_imagepath}')
+
+                if (MOVE_FILES):
+                    os.rename(src=path, dst=new_imagepath)
+                    debug(f'\t\Moved {path} to {new_imagepath}')
+                else:
+                    cv2.imwrite(new_imagepath, img)
+                    debug(f'\t\tCopied {path} to {new_imagepath}')
         else:
             debug(f'\t\tSomething has gone wrong, folder {foldername} doesnt exist and couldnt be created.')
     

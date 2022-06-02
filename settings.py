@@ -10,6 +10,8 @@ BASE_INPUT_DIR = '/var/www/image-org-2/cameras/'
 # BASE_INPUT_DIR = '/Users/danyelsanches/Downloads/image-org/cameras/'
 # Folder where the organized groups should be created/stored
 OUTPUT_DIR = './groups'
+MOVE_FILES = True
+REMOVE_ORIGINAL_QRCODE = True
 
 # ---- Attention, the settings below changes how the algorithm behaves ---- #
 
